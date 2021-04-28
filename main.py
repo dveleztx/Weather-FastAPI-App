@@ -8,19 +8,15 @@
 
 # Imports
 import fastapi
-import asyncio
-from hypercorn.config import Config
-from hypercorn.asyncio import serve
+import uvicorn
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
 # API Object and Webserver Configuration
-api = fastapi.FastAPI()
-config = Config()
-config.bind = ["localhost:8080"]
+api = fastapi.FastAPI(debug=True)
 
 # Templates
-templates = Jinja2Templates('templates')
+templates = Jinja2Templates(directory='templates')
 
 
 @api.get("/")
@@ -29,4 +25,4 @@ def index(request: Request):
 
 
 if __name__ == "__main__":
-    asyncio.run(serve(api, config))
+    uvicorn.run(api, port=8000, host="127.0.0.1")
