@@ -4,4 +4,3 @@ httpx
 jinja2
 starlette
 aiofiles
-requests

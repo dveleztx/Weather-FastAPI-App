@@ -1,10 +1,10 @@
-import requests
+import httpx
 from typing import Optional
 
 api_key: Optional[str] = None
 
 
-def get_report(city: str, state: Optional[str], country: str, units: str) -> dict:
+async def get_report_async(city: str, state: Optional[str], country: str, units: str) -> dict:
     if state:
         q = f"{city},{state},{country}"
     else:
@@ -12,8 +12,9 @@ def get_report(city: str, state: Optional[str], country: str, units: str) -> dic
 
     url = f"https://api.openweathermap.org/data/2.5/weather?q={q}&appid={api_key}&units={units}"
 
-    resp = requests.get(url)
-    resp.raise_for_status()
+    async with httpx.AsyncClient() as client:
+        resp: httpx.Request = await client.get(url)
+        resp.raise_for_status()
 
     data = resp.json()
     forecast = data["main"]
