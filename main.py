@@ -9,20 +9,30 @@
 # Imports
 import fastapi
 import uvicorn
-from starlette.requests import Request
-from starlette.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
+
+# Custom Imports
+from api import weather_api
+from views import home
+
 
 # API Object and Webserver Configuration
 api = fastapi.FastAPI(debug=True)
 
-# Templates
-templates = Jinja2Templates(directory='templates')
+
+def configure():
+    configure_router()
 
 
-@api.get("/")
-def index(request: Request):
-    return templates.TemplateResponse("index.html", {'request': request})
+def configure_router():
+    # Templates and Static Files
+    api.mount("/static", StaticFiles(directory="static"), name="static")
+    api.include_router(home.router)
+    api.include_router(weather_api.router)
 
 
 if __name__ == "__main__":
+    configure()
     uvicorn.run(api, port=8000, host="127.0.0.1")
+else:
+    configure()
