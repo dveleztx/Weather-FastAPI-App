@@ -1,11 +1,12 @@
 # Imports
 import fastapi
 from fastapi import Depends
-from typing import Optional
+from typing import Optional, List
 # Custom Imports
 from models.location import Location
+from models.reports import Report
 from models.validation_error import ValidationError
-from services import openweather_service
+from services import openweather_service, report_service
 
 router = fastapi.APIRouter()
 
@@ -19,3 +20,11 @@ async def weather(loc: Location = Depends(), units: Optional[str] = 'metric'):
     except Exception as ex:
         print(f"Server crashed while processing request: {ex}")
         return fastapi.Response(content="Error processing your request.", status_code=500)
+
+
+@router.get("/api/reports", name="all_reports")
+async def reports_get() -> List[Report]:
+    # await report_service.add_report("A", Location(city="San Antonio"))
+    # await report_service.add_report("B", Location(city="Austin"))
+    return await report_service.get_reports()
+
